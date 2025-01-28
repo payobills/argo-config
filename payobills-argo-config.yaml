@@ -13,6 +13,7 @@ spec:
     server: https://kubernetes.default.svc
   sourceRepos:
   - https://payobills.github.io/helm-charts
+  - https://github.com/payobills/payobills
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -41,11 +42,17 @@ spec:
     namespace: payobills
     server: https://kubernetes.default.svc
   project: payobills
-  source:
-    path: bills
+  sources:
+  - path: bills
     chart: bills
     repoURL: https://payobills.github.io/helm-charts
     targetRevision: 0.2.16
+    helm:
+      valueFiles:
+      - $values/apps/bills/k8s/values.yaml
+  - repoURL: 'https://github.com/payobills/payobills.git'
+    targetRevision: main
+    ref: values
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
@@ -59,11 +66,17 @@ spec:
     namespace: payobills
     server: https://kubernetes.default.svc
   project: payobills
-  source:
-    path: payments
+  sources:
+  - path: payments
     chart: payments
     repoURL: https://payobills.github.io/helm-charts
     targetRevision: 0.3.16
+    helm:
+      valueFiles:
+      - $values/apps/payments/k8s/values.yaml
+  - repoURL: 'https://github.com/payobills/payobills.git'
+    targetRevision: main
+    ref: values
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
