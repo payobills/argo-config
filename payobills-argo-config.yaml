@@ -80,3 +80,51 @@ spec:
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payobills-files
+spec:
+  destination:
+    namespace: payobills
+    server: https://kubernetes.default.svc
+  project: payobills
+  sources:
+  - path: files
+    chart: files
+    repoURL: https://payobills.github.io/helm-charts
+    targetRevision: 0.2.4
+    helm:
+      valueFiles:
+      - $values/apps/files/k8s/values.yaml
+  - repoURL: 'https://github.com/payobills/payobills.git'
+    targetRevision: main
+    ref: values
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payobills-bills-parser
+spec:
+  destination:
+    namespace: payobills
+    server: https://kubernetes.default.svc
+  project: payobills
+  sources:
+  - path: bills-parser
+    chart: bills-parser
+    repoURL: https://payobills.github.io/helm-charts
+    targetRevision: 0.4.2
+    helm:
+      valueFiles:
+      - $values/apps/bills-parser/k8s/values.yaml
+  - repoURL: 'https://github.com/payobills/payobills.git'
+    targetRevision: chore/use-k8s-secrets--bills-parser
+    ref: values
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
