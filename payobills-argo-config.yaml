@@ -24,11 +24,17 @@ spec:
     namespace: payobills
     server: https://kubernetes.default.svc
   project: payobills
-  source:
-    path: ui
+  sources:
+  - path: ui
     chart: ui
     repoURL: https://payobills.github.io/helm-charts
     targetRevision: 0.2.47
+    helm:
+      valueFiles:
+      - $values/apps/ui/k8s/values.yaml
+  - repoURL: 'https://github.com/payobills/payobills.git'
+    targetRevision: main
+    ref: values
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
