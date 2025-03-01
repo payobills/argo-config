@@ -32,6 +32,12 @@ spec:
     helm:
       valueFiles:
       - $values/apps/ui/k8s/values.yaml
+      values: |
+        image:
+          repository: ghcr.io/payobills/apps/ui
+          pullPolicy: IfNotPresent
+          # Overrides the image tag whose default is the chart appVersion.
+          tag: "0.2.50-54fae66a"
   - repoURL: 'https://github.com/payobills/payobills.git'
     targetRevision: main
     ref: values
