@@ -58,7 +58,7 @@ spec:
   - path: bills
     chart: bills
     repoURL: https://payobills.github.io/helm-charts
-    targetRevision: 0.2.16
+    targetRevision: 0.2.17
     helm:
       valueFiles:
       - $values/apps/bills/k8s/values.yaml
