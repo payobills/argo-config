@@ -1,0 +1,153 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payobills-federated-subgraph-bills
+spec:
+  destination:
+    namespace: payobills
+    server: https://kubernetes.default.svc
+  project: payobills
+  sources:
+  - path: bills
+    chart: bills
+    repoURL: https://payobills.github.io/helm-charts
+    targetRevision: 0.2.18
+    helm:
+      valueFiles:
+      - $values/apps/bills/k8s/values.yaml
+      values: |
+        image:
+          repository: ghcr.io/payobills/apps/bills
+          pullPolicy: IfNotPresent
+          tag: "0.0.0-pr.273"
+  - repoURL: 'https://github.com/payobills/payobills.git'
+    targetRevision: main
+    ref: values
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payobills-federated-mesh-gateway
+spec:
+  destination:
+    namespace: payobills
+    server: https://kubernetes.default.svc
+  project: payobills
+  sources:
+  - path: bills
+    chart: bills
+    repoURL: https://payobills.github.io/helm-charts
+    targetRevision: 0.2.16
+    helm:
+      # releaseName: mesh
+      values: |
+        enableOpenTelemetry: false
+
+        replicaCount: 1
+
+        image:
+          repository: ghcr.io/graphql-hive/gateway
+          pullPolicy: IfNotPresent
+          # Overrides the image tag whose default is the chart appVersion.
+          tag: "1.8.0"
+        imagePullSecrets: []
+        nameOverride: ""
+        fullnameOverride: ""
+
+        serviceAccount:
+          # Specifies whether a service account should be created
+          create: true
+          # Annotations to add to the service account
+          annotations: {}
+          # The name of the service account to use.
+          # If not set and create is true, a name is generated using the fullname template
+          name: ""
+
+        pod:
+          annotations: {}
+          command:
+          - "tail"
+          - "-f"
+          - "/dev/null"
+          # - "node"
+          # - "bin.mjs"
+          # - "supergraph"
+          # - "http://subgraph-bills.payobills.svc.cluster.local/graphql"
+          # - "--port"
+          # - "'80'"
+          env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: DEVELOPMENT
+          - name: ASPNETCORE_HTTP_PORTS
+            value: "80"
+          - name: BILLS_DB_PATH
+            value: /data/bills.sqlite
+          - name: BILLS_ALLOWED_ORIGINS
+            value: "http://localhost:5173"
+          - name: NocoDBOptions__BaseUrl
+            value: "http://nocodb.homelab.svc.cluster.local:8080"
+          - name: NocoDBOptions__XCToken
+            valueFrom:
+              secretKeyRef:
+                key: token
+                name: nocodb-token
+
+        podSecurityContext: {}
+          # fsGroup: 2000
+
+        securityContext: {}
+          # capabilities:
+          #   drop:
+          #   - ALL
+          # readOnlyRootFilesystem: true
+          # runAsNonRoot: true
+          # runAsUser: 1000
+
+        service:
+          name: bills
+          type: ClusterIP
+          port: 80
+
+        flags:
+          rewrite: false
+
+        ingress:
+          enabled: false
+
+        resources: {}
+          # We usually recommend not to specify default resources and to leave this as a conscious
+          # choice for the user. This also increases chances charts run on environments with little
+          # resources, such as Minikube. If you do want to specify resources, uncomment the following
+          # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+          # limits:
+          #   cpu: 100m
+          #   memory: 128Mi
+          # requests:
+          #   cpu: 100m
+          #   memory: 128Mi
+
+        autoscaling:
+          enabled: false
+          minReplicas: 1
+          maxReplicas: 100
+          targetCPUUtilizationPercentage: 80
+          # targetMemoryUtilizationPercentage: 80
+
+        nodeSelector:
+          kubernetes.io/hostname: pi
+
+        tolerations: []
+
+        affinity: {}
+      valueFiles:
+      - $values/apps/payments/k8s/values.yaml
+  - repoURL: 'https://github.com/payobills/payobills.git'
+    targetRevision: main
+    ref: values
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
