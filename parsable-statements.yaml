@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payobills-bills--pr-parsable-statements
+spec:
+  destination:
+    namespace: payobills
+    server: https://kubernetes.default.svc
+  project: payobills
+  sources:
+  - path: bills
+    chart: bills
+    repoURL: https://payobills.github.io/helm-charts
+    targetRevision: 0.2.16
+    helm:
+      releaseName: bills--pr-parsable-statements
+      valueFiles:
+      - $values/apps/bills/k8s/values.yaml
+      values: |
+        image:
+          repository: ghcr.io/payobills/apps/bills
+          pullPolicy: IfNotPresent
+          tag: "0.2.15"
+  - repoURL: 'https://github.com/payobills/payobills.git'
+    targetRevision: main
+    ref: values
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
