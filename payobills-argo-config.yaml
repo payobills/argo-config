@@ -205,29 +205,18 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: payobills-federated-subgraph-bills
+  name: payobills-gateway-config
 spec:
   destination:
     namespace: payobills
     server: https://kubernetes.default.svc
   project: payobills
-  sources:
-  - path: bills
-    chart: bills
-    repoURL: https://payobills.github.io/helm-charts
-    targetRevision: 0.2.18
-    helm:
-      valueFiles:
-      - $values/apps/bills/k8s/values.yaml
-      values: |
-        image:
-          repository: ghcr.io/payobills/apps/bills
-          pullPolicy: IfNotPresent
-          # Overrides the image tag whose default is the chart appVersion.
-          tag: "0.0.0-pr.273"
-  - repoURL: 'https://github.com/payobills/payobills.git'
+  source:
+    path: graphql-federation
+    repoURL: https://github.com/payobills/argo-config.git # TODO: Move this to payobills/payobills
     targetRevision: main
-    ref: values
+    directory:
+      recurse: true
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
@@ -235,7 +224,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: payobills-federated-mesh-gateway
+  name: payobills-gateway
 spec:
   destination:
     namespace: payobills
@@ -245,10 +234,14 @@ spec:
   - path: bills
     chart: bills
     repoURL: https://payobills.github.io/helm-charts
-    targetRevision: 0.2.16
+    targetRevision: 0.2.19
     helm:
       values: |
-        enableOpenTelemetry: false
+        helpers:
+          PROJECT_ROOT: /app
+          
+        openTelemetry:
+          enabled: false
 
         replicaCount: 1
 
@@ -259,7 +252,7 @@ spec:
           tag: "1.8.0"
         imagePullSecrets: []
         nameOverride: ""
-        fullnameOverride: ""
+        fullnameOverride: "payobills-gateway"
 
         serviceAccount:
           # Specifies whether a service account should be created
@@ -270,34 +263,51 @@ spec:
           # If not set and create is true, a name is generated using the fullname template
           name: ""
 
+        # disableProbes: true
+        healthProbes:
+          livenessProbe:
+            httpGet:
+              path: /graphql
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /graphql
+              port: http
+
         pod:
           annotations: {}
           command:
-          - "tail"
-          - "-f"
-          - "/dev/null"
-          # - "node"
-          # - "bin.mjs"
-          # - "supergraph"
-          # - "http://subgraph-bills.payobills.svc.cluster.local/graphql"
-          # - "--port"
-          # - "'80'"
+          - "node"
+          - "bin.mjs"
+          - "supergraph"
+          - "-c"
+          - "/mnt/supergraph-config/gateway.config.js"
+          - "/mnt/supergraph-config/supergraph.graphql"
+          - "--port"
+          - "80"
+
           env:
-          - name: ASPNETCORE_ENVIRONMENT
-            value: DEVELOPMENT
-          - name: ASPNETCORE_HTTP_PORTS
-            value: "80"
-          - name: BILLS_DB_PATH
-            value: /data/bills.sqlite
-          - name: BILLS_ALLOWED_ORIGINS
-            value: "http://localhost:5173"
-          - name: NocoDBOptions__BaseUrl
-            value: "http://nocodb.homelab.svc.cluster.local:8080"
-          - name: NocoDBOptions__XCToken
-            valueFrom:
-              secretKeyRef:
-                key: token
-                name: nocodb-token
+          - name: DEBUG
+            value: "1"
+          - name: ENVIRONMENT
+            value: PRODUCTION
+
+          volumeMounts:
+          - name: supergraph-config
+            mountPath: /mnt/supergraph-config
+            readOnly: true
+
+          volumes:
+          - name: supergraph-config
+            projected:
+              sources:
+              - configMap:
+                  name: supergraph-config
+                  items:
+                  - key: graphqlSchema
+                    path: supergraph.graphql
+                  - key: gatewayConfig
+                    path: gateway.config.js
 
         podSecurityContext: {}
           # fsGroup: 2000
