@@ -1,0 +1,200 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: supergraph-config
+  namespace: payobills
+data:
+  gatewayConfig: |
+    import { defineConfig } from "@graphql-hive/gateway"
+    
+    export const gatewayConfig = defineConfig({
+      maskedErrors: false
+    })
+
+  graphqlSchema: |
+
+    schema
+      @link(url: "https://specs.apollo.dev/link/v1.0")
+      @link(url: "https://specs.apollo.dev/join/v0.3", for: EXECUTION)
+      
+      
+      
+      
+      
+      
+    {
+      query: Query
+      mutation: Mutation
+      
+    }
+
+
+      directive @join__enumValue(graph: join__Graph!) repeatable on ENUM_VALUE
+
+      directive @join__field(
+        graph: join__Graph
+        requires: join__FieldSet
+        provides: join__FieldSet
+        type: String
+        external: Boolean
+        override: String
+        usedOverridden: Boolean
+      ) repeatable on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+      directive @join__graph(name: String!, url: String!) on ENUM_VALUE
+
+      directive @join__implements(
+        graph: join__Graph!
+        interface: String!
+      ) repeatable on OBJECT | INTERFACE
+
+      directive @join__type(
+        graph: join__Graph!
+        key: join__FieldSet
+        extension: Boolean! = false
+        resolvable: Boolean! = true
+        isInterfaceObject: Boolean! = false
+      ) repeatable on OBJECT | INTERFACE | UNION | ENUM | INPUT_OBJECT | SCALAR
+
+      directive @join__unionMember(graph: join__Graph!, member: String!) repeatable on UNION
+
+      scalar join__FieldSet
+
+
+      directive @link(
+        url: String
+        as: String
+        for: link__Purpose
+        import: [link__Import]
+      ) repeatable on SCHEMA
+
+      scalar link__Import
+
+      enum link__Purpose {
+        """
+        `SECURITY` features provide metadata necessary to securely resolve fields.
+        """
+        SECURITY
+
+        """
+        `EXECUTION` features provide metadata necessary for operation execution.
+        """
+        EXECUTION
+      }
+
+
+
+
+
+
+
+    enum join__Graph {
+      BILLS @join__graph(name: "bills", url: "http://payobills-subgraph-bills.payobills.svc.cluster.local/graphql") 
+    }
+
+    """
+    The `DateTime` scalar represents an ISO-8601 compliant date time type.
+    """
+    scalar DateTime @join__type(graph: BILLS)  @specifiedBy(url: "https://www.graphql-scalars.com/date-time") 
+
+    """
+    Scalar representing a set of fields.
+    """
+    scalar FieldSet @join__type(graph: BILLS) 
+
+    type BillConnection @join__type(graph: BILLS)  {
+      id: Int!
+      name: String!
+    }
+
+    type BillDTO @join__type(graph: BILLS, key: "id")  {
+      id: ID!
+      name: String!
+      billingDate: Int
+      payByDate: Int
+      latePayByDate: Int
+      isEnabled: Boolean!
+      createdAt: DateTime!
+      updatedAt: DateTime!
+    }
+
+    type BillStatementDTO @join__type(graph: BILLS)  {
+      id: String!
+      startDate: String
+      endDate: String
+      notes: String!
+      createdAt: DateTime!
+      updatedAt: DateTime!
+      bill: BillConnection!
+    }
+
+    type BillStatsDTO @join__type(graph: BILLS)  {
+      startDate: DateTime!
+      endDate: DateTime!
+      stats: [StatDTO!]!
+    }
+
+    type Mutation @join__type(graph: BILLS)  {
+      addBill(billDto: CreateBillDTOInput!) : BillDTO!
+      markPayment(dto: MarkPaymentForBillDTOInput!) : PaymentDTO!
+      addBillStatement(dto: AddBillStatementDTOInput!) : BillStatementDTO!
+    }
+
+    type PaymentDTO @join__type(graph: BILLS)  {
+      id: String!
+      billingPeriod: RangeOfNullableOfDateTime!
+      amount: Float
+      paidAt: DateTime!
+      createdAt: DateTime!
+      updatedAt: DateTime!
+    }
+
+    type Query @join__type(graph: BILLS)  {
+      bills: [BillDTO!]!
+      billById(id: String!) : BillDTO
+      billStats(year: Int!, month: Int!) : BillStatsDTO!
+      billStatements(billId: String!) : [BillStatementDTO!]!
+      billStatementById(billStatementId: String!) : BillStatementDTO
+    }
+
+    type RangeOfInt32 @join__type(graph: BILLS)  {
+      start: Int!
+      end: Int!
+    }
+
+    type RangeOfNullableOfDateTime @join__type(graph: BILLS)  {
+      start: DateTime
+      end: DateTime
+    }
+
+    type StatDTO @join__type(graph: BILLS)  {
+      type: String!
+      billIds: [String!]!
+      dateRanges: [RangeOfInt32!]!
+    }
+
+    input AddBillStatementDTOInput @join__type(graph: BILLS)  {
+      startDate: String
+      endDate: String
+      notes: String!
+      bill: ConnectionDTOInput!
+      file: ConnectionDTOInput!
+    }
+
+    input ConnectionDTOInput @join__type(graph: BILLS)  {
+      id: Int!
+    }
+
+    input CreateBillDTOInput @join__type(graph: BILLS)  {
+      name: String!
+      billingDate: Int
+      payByDate: Int
+      latePayByDate: Int
+    }
+
+    input MarkPaymentForBillDTOInput @join__type(graph: BILLS)  {
+      billPeriodStart: DateTime
+      billPeriodEnd: DateTime
+      amount: Float
+      billId: String!
+    }
