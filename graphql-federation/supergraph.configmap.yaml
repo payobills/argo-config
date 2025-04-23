@@ -6,8 +6,8 @@ metadata:
 data:
   gatewayConfig: |
     import { defineConfig } from "@graphql-hive/gateway"
-    
     export const gatewayConfig = defineConfig({
+      graphqlEndpoint: '/gateway/graphql'
       landingPage: false,
       maskedErrors: false
     })
