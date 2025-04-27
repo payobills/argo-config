@@ -17,6 +17,10 @@ data:
       @link(url: "https://specs.apollo.dev/join/v0.3", for: EXECUTION)
       
       
+      
+      
+      
+      
     {
       query: Query
       mutation: Mutation
@@ -114,6 +118,7 @@ data:
       billingDate: Int
       payByDate: Int
       latePayByDate: Int
+      payments: [PaymentDTO!]!
       isEnabled: Boolean!
       createdAt: DateTime!
       updatedAt: DateTime!
