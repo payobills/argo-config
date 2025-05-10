@@ -38,7 +38,7 @@ spec:
           repository: ghcr.io/payobills/apps/ui
           pullPolicy: IfNotPresent
           # Overrides the image tag whose default is the chart appVersion.
-          tag: "0.2.51"
+          tag: "0.2.52"
   - repoURL: 'https://github.com/payobills/payobills.git'
     targetRevision: main
     ref: values
@@ -177,30 +177,36 @@ spec:
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
-# ---
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: payobills-bills-parser
-# spec:
-#   destination:
-#     namespace: payobills
-#     server: https://kubernetes.default.svc
-#   project: payobills
-#   sources:
-#   - path: bills-parser
-#     chart: bills-parser
-#     repoURL: https://payobills.github.io/helm-charts
-#     targetRevision: 0.4.2
-#     helm:
-#       valueFiles:
-#       - $values/apps/bills-parser/k8s/values.yaml
-#   - repoURL: 'https://github.com/payobills/payobills.git'
-#     targetRevision: main
-#     ref: values
-#   syncPolicy:
-#     syncOptions:
-#     - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payobills-bills-parser
+spec:
+  destination:
+    namespace: payobills
+    server: https://kubernetes.default.svc
+  project: payobills
+  sources:
+  - path: bills-parser
+    chart: bills-parser
+    repoURL: https://payobills.github.io/helm-charts
+    targetRevision: 0.4.2
+    helm:
+      valueFiles:
+      - $values/apps/bills-parser/k8s/values.yaml
+      values: |
+        image:
+          repository: ghcr.io/payobills/apps/bills-parser
+          pullPolicy: IfNotPresent
+          # Overrides the image tag whose default is the chart appVersion.
+          tag: "0.4.3"
+  - repoURL: 'https://github.com/payobills/payobills.git'
+    targetRevision: main
+    ref: values
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
