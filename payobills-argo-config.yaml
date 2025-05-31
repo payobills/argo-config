@@ -49,30 +49,6 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: payobills-bills
-spec:
-  destination:
-    namespace: payobills
-    server: https://kubernetes.default.svc
-  project: payobills
-  sources:
-  - path: bills
-    chart: bills
-    repoURL: https://payobills.github.io/helm-charts
-    targetRevision: 0.2.17
-    helm:
-      valueFiles:
-      - $values/apps/bills/k8s/values.yaml
-  - repoURL: 'https://github.com/payobills/payobills.git'
-    targetRevision: main
-    ref: values
-  syncPolicy:
-    syncOptions:
-    - CreateNamespace=true
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
   name: payobills-subgraph-bills
 spec:
   destination:
@@ -92,7 +68,7 @@ spec:
           repository: ghcr.io/payobills/apps/bills
           pullPolicy: Always
           # Overrides the image tag whose default is the chart appVersion.
-          # tag: "0.2.21"
+          tag: "0.2.20"
   - repoURL: 'https://github.com/payobills/payobills.git'
     targetRevision: main
     ref: values
@@ -122,31 +98,7 @@ spec:
           repository: ghcr.io/payobills/apps/payments
           pullPolicy: Always
           # Overrides the image tag whose default is the chart appVersion.
-          tag: "0.3.25"
-  - repoURL: 'https://github.com/payobills/payobills.git'
-    targetRevision: main
-    ref: values
-  syncPolicy:
-    syncOptions:
-    - CreateNamespace=true
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: payobills-payments
-spec:
-  destination:
-    namespace: payobills
-    server: https://kubernetes.default.svc
-  project: payobills
-  sources:
-  - path: payments
-    chart: payments
-    repoURL: https://payobills.github.io/helm-charts
-    targetRevision: 0.3.16
-    helm:
-      valueFiles:
-      - $values/apps/payments/k8s/values.yaml
+          tag: "0.3.27"
   - repoURL: 'https://github.com/payobills/payobills.git'
     targetRevision: main
     ref: values
