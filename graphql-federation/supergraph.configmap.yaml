@@ -121,6 +121,19 @@ data:
       @join__type(graph: PAYMENTS)
       @specifiedBy(url: "https://www.graphql-scalars.com/date-time")
 
+    scalar DateTimeISO
+      @join__type(graph: FILES)
+
+    type File
+      @join__type(graph: FILES, key: "id")
+    {
+      id: ID!
+      downloadPath: String
+      fileName: String
+      createdAt: DateTimeISO!
+      updatedAt: DateTimeISO
+    }
+
     input IdDTOOfInt64Input
       @join__type(graph: PAYMENTS)
     {
@@ -131,6 +144,7 @@ data:
 
     enum join__Graph {
       BILLS @join__graph(name: "bills", url: "http://payobills-subgraph-bills.payobills.svc.cluster.local/graphql")
+      FILES @join__graph(name: "files", url: "http://payobills-files.payobills.svc.cluster.local/graphql")
       PAYMENTS @join__graph(name: "payments", url: "http://payobills-subgraph-payments.payobills.svc.cluster.local/graphql")
     }
 
@@ -209,6 +223,7 @@ data:
 
     type Query
       @join__type(graph: BILLS)
+      @join__type(graph: FILES)
       @join__type(graph: PAYMENTS)
     {
       bills: [BillDTO!]! @join__field(graph: BILLS)
@@ -298,6 +313,7 @@ data:
     }
 
     type TransactionDTO
+      @join__type(graph: PAYMENTS, key: "id")
       @join__type(graph: PAYMENTS, key: "id")
     {
       id: ID!
