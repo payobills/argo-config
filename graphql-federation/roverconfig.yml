@@ -1,0 +1,10 @@
+federation_version: =2.6.0
+subgraphs:
+  bills:
+    routing_url: http://payobills-subgraph-bills.payobills.svc.cluster.local/graphql
+    schema:
+      subgraph_url: http://localhost:9002/graphql?sdl
+  payments:
+    routing_url: http://payobills-subgraph-payments.payobills.svc.cluster.local/graphql
+    schema:
+      subgraph_url: http://localhost:9003/graphql?sdl

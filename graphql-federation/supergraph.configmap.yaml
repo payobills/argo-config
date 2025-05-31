@@ -15,104 +15,53 @@ data:
     schema
       @link(url: "https://specs.apollo.dev/link/v1.0")
       @link(url: "https://specs.apollo.dev/join/v0.3", for: EXECUTION)
-      
-      
-      
-      
-      
-      
     {
       query: Query
       mutation: Mutation
-      
     }
 
+    directive @join__enumValue(graph: join__Graph!) repeatable on ENUM_VALUE
 
-      directive @join__enumValue(graph: join__Graph!) repeatable on ENUM_VALUE
+    directive @join__field(graph: join__Graph, requires: join__FieldSet, provides: join__FieldSet, type: String, external: Boolean, override: String, usedOverridden: Boolean) repeatable on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
 
-      directive @join__field(
-        graph: join__Graph
-        requires: join__FieldSet
-        provides: join__FieldSet
-        type: String
-        external: Boolean
-        override: String
-        usedOverridden: Boolean
-      ) repeatable on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+    directive @join__graph(name: String!, url: String!) on ENUM_VALUE
 
-      directive @join__graph(name: String!, url: String!) on ENUM_VALUE
+    directive @join__implements(graph: join__Graph!, interface: String!) repeatable on OBJECT | INTERFACE
 
-      directive @join__implements(
-        graph: join__Graph!
-        interface: String!
-      ) repeatable on OBJECT | INTERFACE
+    directive @join__type(graph: join__Graph!, key: join__FieldSet, extension: Boolean! = false, resolvable: Boolean! = true, isInterfaceObject: Boolean! = false) repeatable on OBJECT | INTERFACE | UNION | ENUM | INPUT_OBJECT | SCALAR
 
-      directive @join__type(
-        graph: join__Graph!
-        key: join__FieldSet
-        extension: Boolean! = false
-        resolvable: Boolean! = true
-        isInterfaceObject: Boolean! = false
-      ) repeatable on OBJECT | INTERFACE | UNION | ENUM | INPUT_OBJECT | SCALAR
+    directive @join__unionMember(graph: join__Graph!, member: String!) repeatable on UNION
 
-      directive @join__unionMember(graph: join__Graph!, member: String!) repeatable on UNION
+    directive @link(url: String, as: String, for: link__Purpose, import: [link__Import]) repeatable on SCHEMA
 
-      scalar join__FieldSet
-
-
-      directive @link(
-        url: String
-        as: String
-        for: link__Purpose
-        import: [link__Import]
-      ) repeatable on SCHEMA
-
-      scalar link__Import
-
-      enum link__Purpose {
-        """
-        `SECURITY` features provide metadata necessary to securely resolve fields.
-        """
-        SECURITY
-
-        """
-        `EXECUTION` features provide metadata necessary for operation execution.
-        """
-        EXECUTION
-      }
-
-
-
-
-
-
-
-    enum join__Graph {
-      BILLS @join__graph(name: "bills", url: "http://payobills-subgraph-bills.payobills.svc.cluster.local/graphql") 
-      PAYMENTS @join__graph(name: "payments", url: "http://payobills-subgraph-payments.payobills.svc.cluster.local/graphql") 
+    input AddBillStatementDTOInput
+      @join__type(graph: BILLS)
+    {
+      startDate: String
+      endDate: String
+      notes: String!
+      bill: ConnectionDTOInput!
+      file: ConnectionDTOInput!
     }
 
-    """
-    The `DateTime` scalar represents an ISO-8601 compliant date time type.
-    """
-    scalar DateTime @join__type(graph: BILLS)  @join__type(graph: PAYMENTS)  @specifiedBy(url: "https://www.graphql-scalars.com/date-time") 
-
-    """
-    Scalar representing a set of fields.
-    """
-    scalar FieldSet @join__type(graph: BILLS)  @join__type(graph: PAYMENTS) 
-
-    """
-    The `Long` scalar type represents non-fractional signed whole 64-bit numeric values. Long can represent values between -(2^63) and 2^63 - 1.
-    """
-    scalar Long @join__type(graph: PAYMENTS) 
-
-    type BillConnection @join__type(graph: BILLS)  {
+    type Bill
+      @join__type(graph: PAYMENTS)
+    {
       id: Int!
       name: String!
     }
 
-    type BillDTO @join__type(graph: BILLS, key: "id")  {
+    type BillConnection
+      @join__type(graph: BILLS)
+    {
+      id: Int!
+      name: String!
+    }
+
+    type BillDTO
+      @join__type(graph: BILLS, key: "id")
+      @join__type(graph: BILLS, key: "id")
+    {
       id: ID!
       name: String!
       billingDate: Int
@@ -124,7 +73,16 @@ data:
       updatedAt: DateTime!
     }
 
-    type BillStatementDTO @join__type(graph: BILLS)  {
+    input BillSortInput
+      @join__type(graph: PAYMENTS)
+    {
+      id: SortEnumType
+      name: SortEnumType
+    }
+
+    type BillStatementDTO
+      @join__type(graph: BILLS)
+    {
       id: String!
       startDate: String
       endDate: String
@@ -134,22 +92,113 @@ data:
       bill: BillConnection!
     }
 
-    type BillStatsDTO @join__type(graph: BILLS)  {
+    type BillStatsDTO
+      @join__type(graph: BILLS)
+    {
       startDate: DateTime!
       endDate: DateTime!
       stats: [StatDTO!]!
     }
 
-    type Mutation @join__type(graph: BILLS)  @join__type(graph: PAYMENTS)  {
-      addBill(billDto: CreateBillDTOInput!) : BillDTO! @join__field(graph: BILLS) 
-      markPayment(dto: MarkPaymentForBillDTOInput!) : PaymentDTO! @join__field(graph: BILLS) 
-      addBillStatement(dto: AddBillStatementDTOInput!) : BillStatementDTO! @join__field(graph: BILLS) 
-      setTransactionTags(id: String!, tags: String!) : TransactionDTO! @join__field(graph: PAYMENTS)  @deprecated(reason: "Use the transactionUpdate mutation instead") 
-      transactionUpdate(id: String!, updateDTO: TransactionUpdateDTOInput!) : TransactionDTO! @join__field(graph: PAYMENTS) 
-      transactionAdd(input: TransactionAddDTOInput!) : TransactionDTO! @join__field(graph: PAYMENTS) 
+    input ConnectionDTOInput
+      @join__type(graph: BILLS)
+    {
+      id: Int!
     }
 
-    type PaymentDTO @join__type(graph: BILLS)  {
+    input CreateBillDTOInput
+      @join__type(graph: BILLS)
+    {
+      name: String!
+      billingDate: Int
+      payByDate: Int
+      latePayByDate: Int
+    }
+
+    """The `DateTime` scalar represents an ISO-8601 compliant date time type."""
+    scalar DateTime
+      @join__type(graph: BILLS)
+      @join__type(graph: PAYMENTS)
+      @specifiedBy(url: "https://www.graphql-scalars.com/date-time")
+
+    input IdDTOOfInt64Input
+      @join__type(graph: PAYMENTS)
+    {
+      id: Long!
+    }
+
+    scalar join__FieldSet
+
+    enum join__Graph {
+      BILLS @join__graph(name: "bills", url: "http://payobills-subgraph-bills.payobills.svc.cluster.local/graphql")
+      PAYMENTS @join__graph(name: "payments", url: "http://payobills-subgraph-payments.payobills.svc.cluster.local/graphql")
+    }
+
+    scalar link__Import
+
+    enum link__Purpose {
+      """
+      `SECURITY` features provide metadata necessary to securely resolve fields.
+      """
+      SECURITY
+
+      """
+      `EXECUTION` features provide metadata necessary for operation execution.
+      """
+      EXECUTION
+    }
+
+    """
+    The `Long` scalar type represents non-fractional signed whole 64-bit numeric values. Long can represent values between -(2^63) and 2^63 - 1.
+    """
+    scalar Long
+      @join__type(graph: PAYMENTS)
+
+    input MarkPaymentForBillDTOInput
+      @join__type(graph: BILLS)
+    {
+      billPeriodStart: DateTime
+      billPeriodEnd: DateTime
+      amount: Float
+      billId: String!
+    }
+
+    type Mutation
+      @join__type(graph: BILLS)
+      @join__type(graph: PAYMENTS)
+    {
+      addBill(billDto: CreateBillDTOInput!): BillDTO! @join__field(graph: BILLS)
+      markPayment(dto: MarkPaymentForBillDTOInput!): PaymentDTO! @join__field(graph: BILLS)
+      addBillStatement(dto: AddBillStatementDTOInput!): BillStatementDTO! @join__field(graph: BILLS)
+      setTransactionTags(id: String!, tags: String!): TransactionDTO! @join__field(graph: PAYMENTS) @deprecated(reason: "Use the transactionUpdate mutation instead")
+      transactionUpdate(id: String!, updateDTO: TransactionUpdateDTOInput!): TransactionDTO! @join__field(graph: PAYMENTS)
+      transactionAdd(input: TransactionAddDTOInput!): TransactionDTO! @join__field(graph: PAYMENTS)
+    }
+
+    """Information about pagination in a connection."""
+    type PageInfo
+      @join__type(graph: PAYMENTS)
+    {
+      """
+      Indicates whether more edges exist following the set defined by the clients arguments.
+      """
+      hasNextPage: Boolean!
+
+      """
+      Indicates whether more edges exist prior the set defined by the clients arguments.
+      """
+      hasPreviousPage: Boolean!
+
+      """When paginating backwards, the cursor to continue."""
+      startCursor: String
+
+      """When paginating forwards, the cursor to continue."""
+      endCursor: String
+    }
+
+    type PaymentDTO
+      @join__type(graph: BILLS)
+    {
       id: String!
       billingPeriod: RangeOfNullableOfDateTime!
       amount: Float
@@ -158,100 +207,99 @@ data:
       updatedAt: DateTime!
     }
 
-    type Query @join__type(graph: BILLS)  @join__type(graph: PAYMENTS)  {
-      bills: [BillDTO!]! @join__field(graph: BILLS) 
-      billById(id: String!) : BillDTO @join__field(graph: BILLS) 
-      billStats(year: Int!, month: Int!) : BillStatsDTO! @join__field(graph: BILLS) 
-      billStatements(billId: String!) : [BillStatementDTO!]! @join__field(graph: BILLS) 
-      billStatementById(billStatementId: String!) : BillStatementDTO @join__field(graph: BILLS) 
+    type Query
+      @join__type(graph: BILLS)
+      @join__type(graph: PAYMENTS)
+    {
+      bills: [BillDTO!]! @join__field(graph: BILLS)
+      billById(id: String!): BillDTO @join__field(graph: BILLS)
+      billStats(year: Int!, month: Int!): BillStatsDTO! @join__field(graph: BILLS)
+      billStatements(billId: String!): [BillStatementDTO!]! @join__field(graph: BILLS)
+      billStatementById(billStatementId: String!): BillStatementDTO @join__field(graph: BILLS)
       transactions(
-        """
-        Returns the first _n_ elements from the list.
-        """
+        filters: TransactionFiltersInput
+
+        """Returns the first _n_ elements from the list."""
         first: Int
-        """
-        Returns the elements in the list that come after the specified cursor.
-        """
+
+        """Returns the elements in the list that come after the specified cursor."""
         after: String
-        """
-        Returns the last _n_ elements from the list.
-        """
+
+        """Returns the last _n_ elements from the list."""
         last: Int
+
         """
         Returns the elements in the list that come before the specified cursor.
         """
         before: String
         order: [TransactionDTOSortInput!]
-      ): TransactionsConnection @join__field(graph: PAYMENTS) 
-      transactionByID(id: String!) : TransactionDTO! @join__field(graph: PAYMENTS) 
+      ): TransactionsConnection @join__field(graph: PAYMENTS)
+      transactionByID(id: String!): TransactionDTO! @join__field(graph: PAYMENTS)
       transactionsByYearAndMonth(
         year: Int!
         month: Int!
-        """
-        Returns the first _n_ elements from the list.
-        """
+
+        """Returns the first _n_ elements from the list."""
         first: Int
-        """
-        Returns the elements in the list that come after the specified cursor.
-        """
+
+        """Returns the elements in the list that come after the specified cursor."""
         after: String
-        """
-        Returns the last _n_ elements from the list.
-        """
+
+        """Returns the last _n_ elements from the list."""
         last: Int
+
         """
         Returns the elements in the list that come before the specified cursor.
         """
         before: String
         order: [TransactionDTOSortInput!]
-      ): TransactionsByYearAndMonthConnection @join__field(graph: PAYMENTS) 
-      transactionTags: [TransactionTagDTO!]! @join__field(graph: PAYMENTS) 
+      ): TransactionsByYearAndMonthConnection @join__field(graph: PAYMENTS)
+      transactionTags: [TransactionTagDTO!]! @join__field(graph: PAYMENTS)
     }
 
-    type RangeOfInt32 @join__type(graph: BILLS)  {
+    type RangeOfInt32
+      @join__type(graph: BILLS)
+    {
       start: Int!
       end: Int!
     }
 
-    type RangeOfNullableOfDateTime @join__type(graph: BILLS)  {
+    type RangeOfNullableOfDateTime
+      @join__type(graph: BILLS)
+    {
       start: DateTime
       end: DateTime
     }
 
-    type StatDTO @join__type(graph: BILLS)  {
+    enum SortEnumType
+      @join__type(graph: PAYMENTS)
+    {
+      ASC @join__enumValue(graph: PAYMENTS)
+      DESC @join__enumValue(graph: PAYMENTS)
+    }
+
+    type StatDTO
+      @join__type(graph: BILLS)
+    {
       type: String!
       billIds: [String!]!
       dateRanges: [RangeOfInt32!]!
     }
 
-    type Bill @join__type(graph: PAYMENTS)  {
-      id: Int!
-      name: String!
+    input TransactionAddDTOInput
+      @join__type(graph: PAYMENTS)
+    {
+      transactionText: String!
+      parseStatus: String!
+      bill: IdDTOOfInt64Input!
+      merchant: String!
+      amount: Float
+      notes: String
     }
 
-    """
-    Information about pagination in a connection.
-    """
-    type PageInfo @join__type(graph: PAYMENTS)  {
-      """
-      Indicates whether more edges exist following the set defined by the clients arguments.
-      """
-      hasNextPage: Boolean!
-      """
-      Indicates whether more edges exist prior the set defined by the clients arguments.
-      """
-      hasPreviousPage: Boolean!
-      """
-      When paginating backwards, the cursor to continue.
-      """
-      startCursor: String
-      """
-      When paginating forwards, the cursor to continue.
-      """
-      endCursor: String
-    }
-
-    type TransactionDTO @join__type(graph: PAYMENTS, key: "id")  {
+    type TransactionDTO
+      @join__type(graph: PAYMENTS, key: "id")
+    {
       id: ID!
       tags: [String!]!
       merchant: String
@@ -269,125 +317,9 @@ data:
       bill: Bill!
     }
 
-    type TransactionTagDTO @join__type(graph: PAYMENTS)  {
-      id: String!
-      title: String!
-    }
-
-    """
-    A connection to a list of items.
-    """
-    type TransactionsByYearAndMonthConnection @join__type(graph: PAYMENTS)  {
-      """
-      Information to aid in pagination.
-      """
-      pageInfo: PageInfo!
-      """
-      A list of edges.
-      """
-      edges: [TransactionsByYearAndMonthEdge!]
-      """
-      A flattened list of the nodes.
-      """
-      nodes: [TransactionDTO!]
-    }
-
-    """
-    An edge in a connection.
-    """
-    type TransactionsByYearAndMonthEdge @join__type(graph: PAYMENTS)  {
-      """
-      A cursor for use in pagination.
-      """
-      cursor: String!
-      """
-      The item at the end of the edge.
-      """
-      node: TransactionDTO!
-    }
-
-    """
-    A connection to a list of items.
-    """
-    type TransactionsConnection @join__type(graph: PAYMENTS)  {
-      """
-      Information to aid in pagination.
-      """
-      pageInfo: PageInfo!
-      """
-      A list of edges.
-      """
-      edges: [TransactionsEdge!]
-      """
-      A flattened list of the nodes.
-      """
-      nodes: [TransactionDTO!]
-    }
-
-    """
-    An edge in a connection.
-    """
-    type TransactionsEdge @join__type(graph: PAYMENTS)  {
-      """
-      A cursor for use in pagination.
-      """
-      cursor: String!
-      """
-      The item at the end of the edge.
-      """
-      node: TransactionDTO!
-    }
-
-    enum SortEnumType @join__type(graph: PAYMENTS)  {
-      ASC @join__enumValue(graph: PAYMENTS) 
-      DESC @join__enumValue(graph: PAYMENTS) 
-    }
-
-    input AddBillStatementDTOInput @join__type(graph: BILLS)  {
-      startDate: String
-      endDate: String
-      notes: String!
-      bill: ConnectionDTOInput!
-      file: ConnectionDTOInput!
-    }
-
-    input ConnectionDTOInput @join__type(graph: BILLS)  {
-      id: Int!
-    }
-
-    input CreateBillDTOInput @join__type(graph: BILLS)  {
-      name: String!
-      billingDate: Int
-      payByDate: Int
-      latePayByDate: Int
-    }
-
-    input MarkPaymentForBillDTOInput @join__type(graph: BILLS)  {
-      billPeriodStart: DateTime
-      billPeriodEnd: DateTime
-      amount: Float
-      billId: String!
-    }
-
-    input BillSortInput @join__type(graph: PAYMENTS)  {
-      id: SortEnumType
-      name: SortEnumType
-    }
-
-    input IdDTOOfInt64Input @join__type(graph: PAYMENTS)  {
-      id: Long!
-    }
-
-    input TransactionAddDTOInput @join__type(graph: PAYMENTS)  {
-      transactionText: String!
-      parseStatus: String!
-      bill: IdDTOOfInt64Input!
-      merchant: String!
-      amount: Float
-      notes: String
-    }
-
-    input TransactionDTOSortInput @join__type(graph: PAYMENTS)  {
+    input TransactionDTOSortInput
+      @join__type(graph: PAYMENTS)
+    {
       id: SortEnumType
       merchant: SortEnumType
       currency: SortEnumType
@@ -405,7 +337,72 @@ data:
       bill: BillSortInput
     }
 
-    input TransactionUpdateDTOInput @join__type(graph: PAYMENTS)  {
+    input TransactionFiltersInput
+      @join__type(graph: PAYMENTS)
+    {
+      ocrId: String
+    }
+
+    """A connection to a list of items."""
+    type TransactionsByYearAndMonthConnection
+      @join__type(graph: PAYMENTS)
+    {
+      """Information to aid in pagination."""
+      pageInfo: PageInfo!
+
+      """A list of edges."""
+      edges: [TransactionsByYearAndMonthEdge!]
+
+      """A flattened list of the nodes."""
+      nodes: [TransactionDTO!]
+    }
+
+    """An edge in a connection."""
+    type TransactionsByYearAndMonthEdge
+      @join__type(graph: PAYMENTS)
+    {
+      """A cursor for use in pagination."""
+      cursor: String!
+
+      """The item at the end of the edge."""
+      node: TransactionDTO!
+    }
+
+    """A connection to a list of items."""
+    type TransactionsConnection
+      @join__type(graph: PAYMENTS)
+    {
+      """Information to aid in pagination."""
+      pageInfo: PageInfo!
+
+      """A list of edges."""
+      edges: [TransactionsEdge!]
+
+      """A flattened list of the nodes."""
+      nodes: [TransactionDTO!]
+    }
+
+    """An edge in a connection."""
+    type TransactionsEdge
+      @join__type(graph: PAYMENTS)
+    {
+      """A cursor for use in pagination."""
+      cursor: String!
+
+      """The item at the end of the edge."""
+      node: TransactionDTO!
+    }
+
+    type TransactionTagDTO
+      @join__type(graph: PAYMENTS)
+    {
+      id: String!
+      title: String!
+    }
+
+    input TransactionUpdateDTOInput
+      @join__type(graph: PAYMENTS)
+    {
       merchant: String
       currency: String
       amount: Float
