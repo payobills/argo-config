@@ -66,7 +66,7 @@ spec:
       values: |
         image:
           repository: ghcr.io/payobills/apps/bills
-          pullPolicy: Always
+          pullPolicy: IfNotPresent
           # Overrides the image tag whose default is the chart appVersion.
           tag: "0.2.20"
   - repoURL: 'https://github.com/payobills/payobills.git'
@@ -96,7 +96,7 @@ spec:
       values: |
         image:
           repository: ghcr.io/payobills/apps/payments
-          pullPolicy: Always
+          pullPolicy: IfNotPresent
           # Overrides the image tag whose default is the chart appVersion.
           tag: "0.3.28"
   - repoURL: 'https://github.com/payobills/payobills.git'
