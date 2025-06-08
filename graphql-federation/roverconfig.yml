@@ -7,7 +7,7 @@ subgraphs:
   payments:
     routing_url: http://payobills-subgraph-payments.payobills.svc.cluster.local/graphql
     schema:
-      subgraph_url: http://localhost:9003/graphql?sdl
+      subgraph_url: http://localhost:5000/graphql?sdl
   files:
     routing_url: http://payobills-files.payobills.svc.cluster.local/graphql
     schema:
