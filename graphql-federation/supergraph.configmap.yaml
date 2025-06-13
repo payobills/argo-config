@@ -206,6 +206,7 @@ data:
       setTransactionTags(id: String!, tags: String!): TransactionDTO! @join__field(graph: PAYMENTS) @deprecated(reason: "Use the transactionUpdate mutation instead")
       transactionUpdate(id: String!, updateDTO: TransactionUpdateDTOInput!): TransactionDTO! @join__field(graph: PAYMENTS)
       transactionAdd(input: TransactionAddDTOInput!): TransactionDTO! @join__field(graph: PAYMENTS)
+      transactionReceiptsSync(input: TransactionReceiptsSyncInput!): [File!]! @join__field(graph: PAYMENTS)
     }
 
     """Information about pagination in a connection."""
@@ -377,6 +378,12 @@ data:
       @join__type(graph: PAYMENTS)
     {
       ocrId: String
+    }
+
+    input TransactionReceiptsSyncInput
+      @join__type(graph: PAYMENTS)
+    {
+      transactionID: String!
     }
 
     """A connection to a list of items."""
