@@ -139,6 +139,7 @@ data:
       fileName: String @join__field(graph: FILES)
       createdAt: DateTimeISO! @join__field(graph: FILES)
       updatedAt: DateTimeISO @join__field(graph: FILES)
+      ocrID: ID @join__field(graph: FILES)
     }
 
     """Input type to filter files"""
