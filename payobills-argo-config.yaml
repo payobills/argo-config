@@ -128,7 +128,7 @@ spec:
           repository: ghcr.io/payobills/apps/files
           pullPolicy: IfNotPresent
           # Overrides the image tag whose default is the chart appVersion.
-          tag: "0.2.9"
+          tag: "0.2.10"
   - repoURL: 'https://github.com/payobills/payobills.git'
     targetRevision: main
     ref: values
