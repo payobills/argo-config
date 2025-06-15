@@ -90,6 +90,7 @@ data:
       createdAt: DateTime!
       updatedAt: DateTime!
       bill: BillConnection!
+      statement: File
     }
 
     type BillStatsDTO
@@ -126,6 +127,7 @@ data:
 
     """File Entity to represent a file created on NocoDB"""
     type File
+      @join__type(graph: BILLS, key: "id")
       @join__type(graph: FILES, key: "id")
       @join__type(graph: PAYMENTS, key: "id")
     {
