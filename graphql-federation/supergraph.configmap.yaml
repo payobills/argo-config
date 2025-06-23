@@ -91,6 +91,9 @@ data:
       updatedAt: DateTime!
       bill: BillConnection!
       statement: File
+      amount: Float
+      isFullyPaid: Boolean!
+      payments: [TransactionDTO!]!
     }
 
     type BillStatsDTO
@@ -337,25 +340,26 @@ data:
     }
 
     type TransactionDTO
+      @join__type(graph: BILLS, key: "id")
       @join__type(graph: PAYMENTS, key: "id")
       @join__type(graph: PAYMENTS, key: "id")
     {
       id: ID!
-      merchant: String
-      currency: String
-      amount: Float
-      notes: String!
-      transactionText: String!
-      backDateString: String!
-      parseStatus: String!
-      backDate: DateTime
-      createdAt: DateTime!
-      updatedAt: DateTime!
-      paidAt: DateTime!
-      updatedAtString: String!
-      bill: Bill!
-      receipts: [File!]!
-      tags: [String!]!
+      merchant: String @join__field(graph: PAYMENTS)
+      currency: String @join__field(graph: PAYMENTS)
+      amount: Float @join__field(graph: PAYMENTS)
+      notes: String! @join__field(graph: PAYMENTS)
+      transactionText: String! @join__field(graph: PAYMENTS)
+      backDateString: String! @join__field(graph: PAYMENTS)
+      parseStatus: String! @join__field(graph: PAYMENTS)
+      backDate: DateTime @join__field(graph: PAYMENTS)
+      createdAt: DateTime! @join__field(graph: PAYMENTS)
+      updatedAt: DateTime! @join__field(graph: PAYMENTS)
+      paidAt: DateTime! @join__field(graph: PAYMENTS)
+      updatedAtString: String! @join__field(graph: PAYMENTS)
+      bill: Bill! @join__field(graph: PAYMENTS)
+      receipts: [File!]! @join__field(graph: PAYMENTS)
+      tags: [String!]! @join__field(graph: PAYMENTS)
     }
 
     input TransactionDTOSortInput
