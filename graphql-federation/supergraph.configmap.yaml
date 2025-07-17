@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: supergraph-config
   namespace: payobills
+  annotations:
+    sha256sum: 1a873a220e6fd3c489a64fcee2a4dfc659a5bb36507d03a02364bb7d7c0143d6
 data:
   gatewayConfig: |
     import { defineConfig } from "@graphql-hive/gateway"
@@ -34,14 +36,18 @@ data:
 
     directive @link(url: String, as: String, for: link__Purpose, import: [link__Import]) repeatable on SCHEMA
 
-    input AddBillStatementDTOInput
+    input AddOrUpdateBillStatementDTOInput
       @join__type(graph: BILLS)
     {
+      id: String
       startDate: String
       endDate: String
       notes: String!
+      amount: Float
       bill: ConnectionDTOInput!
-      file: ConnectionDTOInput!
+      file: ConnectionDTOInput
+      edges: EdgesDTOInput
+      isFullyPaid: Boolean
     }
 
     type Bill
@@ -128,6 +134,12 @@ data:
     scalar DateTimeISO
       @join__type(graph: FILES)
 
+    input EdgesDTOInput
+      @join__type(graph: BILLS)
+    {
+      paymentIds: [String!]!
+    }
+
     """File Entity to represent a file created on NocoDB"""
     type File
       @join__type(graph: BILLS, key: "id")
@@ -208,7 +220,7 @@ data:
     {
       addBill(billDto: CreateBillDTOInput!): BillDTO! @join__field(graph: BILLS)
       markPayment(dto: MarkPaymentForBillDTOInput!): PaymentDTO! @join__field(graph: BILLS)
-      addBillStatement(dto: AddBillStatementDTOInput!): BillStatementDTO! @join__field(graph: BILLS)
+      addOrUpdateBillStatement(dto: AddOrUpdateBillStatementDTOInput!): BillStatementDTO! @join__field(graph: BILLS)
       setTransactionTags(id: String!, tags: String!): TransactionDTO! @join__field(graph: PAYMENTS) @deprecated(reason: "Use the transactionUpdate mutation instead")
       transactionUpdate(id: String!, updateDTO: TransactionUpdateDTOInput!): TransactionDTO! @join__field(graph: PAYMENTS)
       transactionAdd(input: TransactionAddDTOInput!): TransactionDTO! @join__field(graph: PAYMENTS)
