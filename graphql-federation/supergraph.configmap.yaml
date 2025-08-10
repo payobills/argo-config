@@ -468,8 +468,8 @@ data:
       merchant: String
       currency: String
       amount: Float
+      parseStatus: String
       notes: String
       backDateString: String
       backDate: DateTime
-      tags: [String!]
     }
