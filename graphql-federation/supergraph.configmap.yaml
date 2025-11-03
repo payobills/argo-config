@@ -397,6 +397,7 @@ data:
       @join__type(graph: PAYMENTS)
     {
       ocrId: String
+      searchTerm: String
     }
 
     input TransactionReceiptsSyncInput
