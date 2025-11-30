@@ -15,8 +15,10 @@ Currently, the GraphQL composition done using [graphql-hive](https://github.com/
 
 ```bash
 npx @graphql-hive/cli dev \
-    --service bills --schema 'http://localhost:9002/graphql?sdl' --url http://payobills-subgraph-bills.payobills.svc.cluster.local/graphql \
-    --service payments --schema 'http://localhost:9003/graphql?sdl' --url http://payobills-subgraph-payments.payobills.svc.cluster.local/graphql \
+    --service bills --schema 'http://localhost:9002/graphql?sdl' \
+    --url http://payobills-subgraph-bills.payobills.svc.cluster.local/graphql \
+    --service payments --schema 'http://localhost:9003/graphql?sdl' \
+    --url http://payobills-subgraph-payments.payobills.svc.cluster.local/graphql \
     --write=graphql-federation/supergraph.graphql
 ```
 
