@@ -38,7 +38,7 @@ spec:
           repository: ghcr.io/payobills/apps/ui
           pullPolicy: IfNotPresent
           # Overrides the image tag whose default is the chart appVersion.
-          tag: "0.6.15"
+          tag: "0.6.25"
   - repoURL: 'https://github.com/payobills/payobills.git'
     targetRevision: main
     ref: values
@@ -98,7 +98,7 @@ spec:
           repository: ghcr.io/payobills/apps/payments
           pullPolicy: IfNotPresent
           # Overrides the image tag whose default is the chart appVersion.
-          tag: "0.6.5"
+          tag: "0.6.9"
   - repoURL: 'https://github.com/payobills/payobills.git'
     targetRevision: main
     ref: values
@@ -381,7 +381,7 @@ spec:
           repository: ghcr.io/payobills/tools/transaction-parser
           pullPolicy: IfNotPresent
           # Overrides the image tag whose default is the chart appVersion.
-          tag: "0.5.2"
+          tag: "0.6.4"
   - repoURL: 'https://github.com/payobills/payobills.git'
     targetRevision: main
     ref: values
