@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payobills-ui
+spec:
+  destination:
+    namespace: payobills
+    server: https://kubernetes.default.svc
+  project: payobills
+  sources:
+  - path: ui
+    chart: ui
+    repoURL: https://payobills.github.io/helm-charts
+    targetRevision: 0.2.47
+    helm:
+      valueFiles:
+      - $values/apps/ui/k8s/values.yaml
+      valuesObject:
+        openTelemetry:
+          enabled: "false"
+        image:
+          repository: ghcr.io/payobills/apps/ui
+          pullPolicy: Always
+          # Overrides the image tag whose default is the chart appVersion.
+          tag: "0.0.0-pr.450"
+  - repoURL: 'https://github.com/payobills/payobills.git'
+    targetRevision: main
+    ref: values
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+

@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payobills-ocr
+spec:
+  destination:
+    namespace: payobills
+    server: https://kubernetes.default.svc
+  project: payobills
+  sources:
+  - path: ocr
+    chart: ocr
+    repoURL: https://payobills.github.io/helm-charts
+    targetRevision: "0.0.1-9d8b2060"
+    helm:
+      valueFiles:
+      - $values/apps/ocr/k8s/values.yaml
+      values: |
+        openTelemetry:
+          enabled: "false"
+        image:
+          repository: ghcr.io/payobills/apps/ocr
+          pullPolicy: IfNotPresent
+          # Overrides the image tag whose default is the chart appVersion.
+          tag: "0.5.2"
+  - repoURL: 'https://github.com/payobills/payobills.git'
+    targetRevision: main
+    ref: values
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+

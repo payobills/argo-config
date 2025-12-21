@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payobills-transaction-parser
+spec:
+  destination:
+    namespace: payobills
+    server: https://kubernetes.default.svc
+  project: payobills
+  sources:
+  - path: transaction-parser
+    chart: transaction-parser
+    repoURL: https://payobills.github.io/helm-charts
+    targetRevision: 0.5.2
+    helm:
+      valueFiles:
+      - $values/apps/transaction-parser/k8s/values.yaml
+      values: |
+        openTelemetry:
+          enabled: "true"
+        image:
+          repository: ghcr.io/payobills/tools/transaction-parser
+          pullPolicy: IfNotPresent
+          # Overrides the image tag whose default is the chart appVersion.
+          tag: "0.6.4"
+  - repoURL: 'https://github.com/payobills/payobills.git'
+    targetRevision: main
+    ref: values
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+
