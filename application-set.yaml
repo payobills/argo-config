@@ -4,6 +4,7 @@ metadata:
   name: payobills-applications
   namespace: argo-cd
 spec:
+  goTemplate: true
   generators:
     - git:
         repoURL: https://github.com/payobills/argo-config  
@@ -12,7 +13,7 @@ spec:
           - path: "test/**/config.json"  
   template:
     metadata:
-      name: '{{.metadata.name}}-test'
+      name: 'payobills-{{.path.basename}}'
     spec:
       destination:
         namespace: payobills
@@ -22,17 +23,17 @@ spec:
       - path: '{{.path.basename}}'
         chart: '{{.path.basename}}'
         repoURL: https://payobills.github.io/helm-charts
-        targetRevision: 0.2.47
+        targetRevision: '{.metadata.labels.chartVersion}'
         helm:
           valueFiles:
-          - $values/apps/ui/k8s/values.yaml
+          - $values/apps/{{.path.basename}}/k8s/values.yaml
           valuesObject:
             openTelemetry:
               enabled: "false"
             image:
               repository: ghcr.io/payobills/apps/ui
               pullPolicy: Always
-              tag: "0.6.33"
+              tag: '{.metadata.labels.appVersion}'
       - repoURL: 'https://github.com/payobills/payobills.git'
         targetRevision: main
         ref: values

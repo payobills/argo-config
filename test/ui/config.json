@@ -1,8 +1,10 @@
 {
-  "apiVersion": "argoproj.io/v1alpha1",
-  "kind": "Application",
   "metadata": {
-    "name": "payobills-ui"
+    "name": "ui",
+    "labels": {
+      "chartVersion": "0.2.47",
+      "appVersion": "0.6.33"
+    }
   },
   "spec": {
     "destination": {
