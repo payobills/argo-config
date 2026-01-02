@@ -20,14 +20,42 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: payobills-applications
-  namespace: argocd
+  namespace: argo-cd
 spec:
   generators:
     - git:
         repoURL: https://github.com/payobills/argo-config  
         revision: main  
-        directories:
-          - path: "apps"  
         files:
-          - path: "*.yaml"  
+          - path: "test/**/config.json"  
+  template:
+    metadata:
+      name: {{metadata.name}}
+    spec:
+      destination:
+        namespace: payobills
+        server: https://kubernetes.default.svc
+      project: payobills
+      sources:
+      - path: {{.path.basename}}
+        chart: {{.path.basename}}
+        repoURL: https://payobills.github.io/helm-charts
+          targetRevision: 0.2.47
+          helm:
+            valueFiles:
+            - $values/apps/ui/k8s/values.yaml
+            valuesObject:
+              openTelemetry:
+                enabled: "false"
+              image:
+                repository: ghcr.io/payobills/apps/ui
+                pullPolicy: Always
+                # Overrides the image tag whose default is the chart appVersion.
+                tag: "0.6.33"
+        - repoURL: 'https://github.com/payobills/payobills.git'
+          targetRevision: main
+          ref: values
+        syncPolicy:
+      syncOptions:
+      - CreateNamespace=true
 
