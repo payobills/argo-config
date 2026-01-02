@@ -23,7 +23,7 @@ spec:
       - path: '{{.path.basename}}'
         chart: '{{.path.basename}}'
         repoURL: https://payobills.github.io/helm-charts
-        targetRevision: '{.metadata.labels.chartVersion}'
+        targetRevision: '{{.metadata.labels.chartVersion}}'
         helm:
           valueFiles:
           - $values/apps/{{.path.basename}}/k8s/values.yaml
@@ -33,7 +33,7 @@ spec:
             image:
               repository: ghcr.io/payobills/apps/ui
               pullPolicy: Always
-              tag: '{.metadata.labels.appVersion}'
+              tag: '{{.metadata.labels.appVersion}}'
       - repoURL: 'https://github.com/payobills/payobills.git'
         targetRevision: main
         ref: values
