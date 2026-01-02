@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: payobills
+spec:
+  clusterResourceWhitelist:
+  - group: ''
+    kind: Namespace
+  sourceNamespaces:
+  - payobills
+  destinations:
+  - namespace: payobills
+    server: https://kubernetes.default.svc
+  sourceRepos:
+  - https://payobills.github.io/helm-charts
+  - https://github.com/payobills/payobills
+  - https://github.com/payobills/argo-config
+
