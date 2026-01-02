@@ -10,7 +10,7 @@ spec:
         repoURL: https://github.com/payobills/argo-config  
         revision: main  
         files:
-          - path: "test/**/config.json"  
+          - path: "apps/**/config.json"  
   template:
     metadata:
       name: 'payobills-{{.path.basename}}'
