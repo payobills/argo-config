@@ -1,6 +1,7 @@
 {
   "metadata": {
     "name": "bills",
+    "appName": "subgraph-bills",
     "labels": {
       "chartVersion": "0.2.18",
       "appVersion": "0.5.2"
