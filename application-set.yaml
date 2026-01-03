@@ -31,7 +31,7 @@ spec:
             openTelemetry:
               enabled: "false"
             image:
-              repository: 'ghcr.io/payobills/{{= .metadata.labels.appType != nil ? .metadata.labels.appType : "apps" }}/{{.path.basename}}'
+              repository: 'ghcr.io/payobills/{{if .metadata.labels.appType}}{{.metadata.labels.appType }}{{else }}{{"apps" }}{{end}}/{{.path.basename}}'
               pullPolicy: Always
               tag: '{{.metadata.labels.appVersion}}'
       - repoURL: 'https://github.com/payobills/payobills.git'
