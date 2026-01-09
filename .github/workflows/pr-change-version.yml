@@ -1,0 +1,50 @@
+on:
+  workflow_dispatch:
+    inputs:
+      APP:
+        description: 'App name (e.g. ui)'
+        required: true
+      VERSION:
+        description: 'New version number (e.g. 0.6.35)'
+        required: true
+
+jobs:
+  update-version-and-raise-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up inputs
+        id: inputs
+        run: |
+          APP=${INPUT_APP}
+          VERSION=${INPUT_VERSION}
+
+      - name: Update config.json with new version
+        run: |
+          jq '.metadata.labels.appVersion = "'${VERSION}'"' apps/${APP}/config.json > apps/${APP}/config.json.new
+          mv apps/${APP}/config.json.new apps/${APP}/config.json
+
+      - name: Add updated config.json to staging area
+        run: git add apps/${APP}/config.json
+
+      - name: Commit changes with meaningful commit message
+        run: |
+          git commit -m "Update ${APP} app version to ${VERSION}"
+
+      - name: Push changes to origin
+        uses: ad-m/github-push-action@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: staging
+
+      - name: Raise PR from staging to main
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Update ${APP} app version to ${VERSION}"
+          body: "This PR updates the ${APP} app version to ${VERSION}."
+          head: staging
+          base: main
+      
