@@ -28,7 +28,7 @@ jobs:
       - name: Raise PR from staging to main
         uses: peter-evans/create-pull-request@v3
         with:
-          token: ${{ secrets.CICD_PAT }}
+          token: ${{ secrets.VERSION_BUMP_TOKEN }}
           branch-suffix: random
           title: "Update ${APP} app version to ${VERSION}"
           body: "This PR updates the ${APP} app version to ${VERSION}."
