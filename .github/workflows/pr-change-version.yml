@@ -1,3 +1,5 @@
+name: 'Version Bump PR creator'
+
 on:
   workflow_dispatch:
     inputs:
@@ -27,6 +29,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.CICD_PAT }}
+          branch-suffix: random
           title: "Update ${APP} app version to ${VERSION}"
           body: "This PR updates the ${APP} app version to ${VERSION}."
           head: staging
