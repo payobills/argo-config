@@ -15,13 +15,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up inputs
-        id: inputs
-        run: |
-          APP=${INPUT_APP}
-          VERSION=${INPUT_VERSION}
-
       - name: Update config.json with new version
+        env:
+          APP: ${{ inputs.APP }}
+          VERSION: ${{ inputs.VERSION }}
         run: |
           jq '.metadata.labels.appVersion = "'${VERSION}'"' apps/${APP}/config.json > apps/${APP}/config.json.new
           mv apps/${APP}/config.json.new apps/${APP}/config.json
