@@ -2,8 +2,8 @@
   "metadata": {
     "name": "ui",
     "labels": {
-      "chartVersion": "0.2.47",
-      "appVersion": "0.6.36"
+      "appVersion": "0.6.36",
+      "chartVersion": "0.6.0"
     }
   }
 }
