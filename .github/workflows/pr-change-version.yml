@@ -30,7 +30,7 @@ jobs:
         with:
           token: ${{ secrets.VERSION_BUMP_TOKEN }}
           branch-suffix: random
-          title: "Chore(${{ inputs.APP }}): Update ${{ inputs.APP }} app version to ${{ inputs.VERSION }}"
+          title: "[Automation] Chore(${{ inputs.APP }}): Update ${{ inputs.APP }} app version to ${{ inputs.VERSION }}"
           body: "Update ${{ inputs.APP }} app version to ${{ inputs.VERSION }}"
           head: staging
           base: main
