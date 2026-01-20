@@ -360,6 +360,7 @@ data:
       merchant: String @join__field(graph: PAYMENTS)
       currency: String @join__field(graph: PAYMENTS)
       amount: Float @join__field(graph: PAYMENTS)
+      normalizedAmount: Float @join__field(graph: PAYMENTS)
       notes: String! @join__field(graph: PAYMENTS)
       transactionText: String! @join__field(graph: PAYMENTS)
       backDateString: String! @join__field(graph: PAYMENTS)
@@ -381,6 +382,7 @@ data:
       merchant: SortEnumType
       currency: SortEnumType
       amount: SortEnumType
+      normalizedAmount: SortEnumType
       notes: SortEnumType
       transactionText: SortEnumType
       backDateString: SortEnumType
@@ -398,6 +400,7 @@ data:
     {
       ocrId: String
       searchTerm: String
+      tags: [String!]!
     }
 
     input TransactionReceiptsSyncInput
