@@ -7,10 +7,10 @@ spec:
   goTemplate: true
   generators:
     - git:
-        repoURL: https://github.com/payobills/argo-config  
-        revision: main  
+        repoURL: https://github.com/payobills/argo-config
+        revision: main
         files:
-          - path: "apps/**/config.json"  
+          - path: "apps/**/config.json"
   template:
     metadata:
       name: 'payobills-{{ if .metadata.labels.appName }}{{.metadata.labels.appName}}{{else}}{{.path.basename}}{{end}}'
