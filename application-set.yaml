@@ -37,7 +37,7 @@ spec:
       - repoURL: 'https://github.com/payobills/payobills.git'
         targetRevision: main
         ref: values
-      - repoURL: 'https://github.com/payobills/payobills.git'
+      - repoURL: 'https://github.com/payobills/argo-config.git'
         targetRevision: main
         ref: argoConfig
       syncPolicy:
