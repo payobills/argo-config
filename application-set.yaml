@@ -26,6 +26,7 @@ spec:
         targetRevision: '{{.metadata.labels.chartVersion}}'
         helm:
           valueFiles:
+          - $values/apps/{{.path.basename}}/k8s/values.yaml
           - $argoConfig/apps/{{.path.basename}}/values.yaml
           valuesObject:
             openTelemetry:
