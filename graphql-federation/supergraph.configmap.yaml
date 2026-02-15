@@ -71,6 +71,7 @@ data:
       id: ID!
       name: String!
       billingDate: Int
+      billingPeriod: String!
       payByDate: Int
       latePayByDate: Int
       payments: [PaymentDTO!]!
@@ -225,6 +226,7 @@ data:
       transactionUpdate(id: String!, updateDTO: TransactionUpdateDTOInput!): TransactionDTO! @join__field(graph: PAYMENTS)
       transactionAdd(input: TransactionAddDTOInput!): TransactionDTO! @join__field(graph: PAYMENTS)
       transactionReceiptsSync(input: TransactionReceiptsSyncInput!): [File!]! @join__field(graph: PAYMENTS)
+      transactionTagsAddOrUpdate(input: TransactionTagAddOrUpdateDTOInput!): TransactionTagDTO! @join__field(graph: PAYMENTS)
     }
 
     """Information about pagination in a connection."""
@@ -457,6 +459,13 @@ data:
 
       """The item at the end of the edge."""
       node: TransactionDTO!
+    }
+
+    input TransactionTagAddOrUpdateDTOInput
+      @join__type(graph: PAYMENTS)
+    {
+      id: String
+      title: String!
     }
 
     type TransactionTagDTO
