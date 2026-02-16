@@ -4,8 +4,6 @@ metadata:
   name: payobills-applications
   namespace: argo-cd
 spec:
-  syncPolicy:
-    automated: {}
   goTemplate: true
   generators:
     - git:
@@ -44,5 +42,6 @@ spec:
         targetRevision: main
         ref: argoConfig
       syncPolicy:
+        automated: {}
         syncOptions:
         - CreateNamespace=true
