@@ -4,6 +4,8 @@ metadata:
   name: payobills-applications
   namespace: argo-cd
 spec:
+  syncPolicy:
+    automated: {}
   goTemplate: true
   generators:
     - git:
@@ -15,8 +17,6 @@ spec:
     metadata:
       name: 'payobills-{{ if .metadata.labels.appName }}{{.metadata.labels.appName}}{{else}}{{.path.basename}}{{end}}'
     spec:
-      syncPolicy:
-        automated: {}
       destination:
         namespace: payobills
         server: https://kubernetes.default.svc
