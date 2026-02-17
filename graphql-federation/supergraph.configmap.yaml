@@ -402,7 +402,7 @@ data:
     {
       ocrId: String
       searchTerm: String
-      tags: [String!]!
+      tags: [String!]
     }
 
     input TransactionReceiptsSyncInput
