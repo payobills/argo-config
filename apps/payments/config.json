@@ -3,7 +3,7 @@
     "name": "payments",
     "labels": {
       "chartVersion": "0.3.16",
-      "appVersion": "0.6.11",
+      "appVersion": "0.6.12",
       "appName": "subgraph-payments"
     }
   }
