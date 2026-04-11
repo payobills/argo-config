@@ -76,6 +76,7 @@ data:
       latePayByDate: Int
       payments: [PaymentDTO!]!
       isEnabled: Boolean!
+      primaryType: String
       createdAt: DateTime!
       updatedAt: DateTime!
     }
@@ -124,6 +125,7 @@ data:
       billingDate: Int
       payByDate: Int
       latePayByDate: Int
+      primaryType: String
     }
 
     """The `DateTime` scalar represents an ISO-8601 compliant date time type."""
