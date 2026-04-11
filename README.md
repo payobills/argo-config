@@ -22,6 +22,8 @@ $ npx @graphql-hive/cli dev \
     --url http://payobills-subgraph-bills.payobills.svc.cluster.local/graphql \
     --service payments --schema 'http://localhost:9003/graphql?sdl' \
     --url http://payobills-subgraph-payments.payobills.svc.cluster.local/graphql \
+    --service files --schema 'http://localhost:9004/graphql?sdl' \
+    --url http://payobills-files.payobills.svc.cluster.local/graphql \
     --write=graphql-federation/supergraph.graphql
 ```
 
