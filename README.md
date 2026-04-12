@@ -32,7 +32,8 @@ Using [rover](https://github.com/merapar/rover) to generate GraphQL schema
 ```bash
 $ npx @apollo/rover supergraph compose \
     --config ./graphql-federation/roverconfig.yml \
-    -o ./graphql-federation/supergraph.rover.gql
+    -o ./graphql-federation/supergraph.rover.gql \
+    --elv2-agreement=accept
 ```
 
 ## Argo Deployments
