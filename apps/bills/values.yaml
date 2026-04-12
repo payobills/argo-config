@@ -1,0 +1,19 @@
+supergraphHook:
+  enabled: true
+  configMapName: supergraph-config
+  namespace: payobills
+  roverConfig: |
+    federation_version: =2.6.0
+    subgraphs:
+      bills:
+        routing_url: http://payobills-subgraph-bills.payobills.svc.cluster.local/graphql
+        schema:
+          subgraph_url: http://payobills-subgraph-bills.payobills.svc.cluster.local/graphql?sdl
+      payments:
+        routing_url: http://payobills-subgraph-payments.payobills.svc.cluster.local/graphql
+        schema:
+          subgraph_url: http://payobills-subgraph-payments.payobills.svc.cluster.local/graphql?sdl
+      files:
+        routing_url: http://payobills-files.payobills.svc.cluster.local/graphql
+        schema:
+          subgraph_url: http://payobills-files.payobills.svc.cluster.local/graphql?sdl
