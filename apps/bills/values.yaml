@@ -2,6 +2,7 @@ supergraphHook:
   enabled: true
   configMapName: supergraph-config
   namespace: payobills
+  gatewayDeploymentName: payobills-gateway
   roverConfig: |
     federation_version: =2.6.0
     subgraphs:
