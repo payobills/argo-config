@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: payobills-infrastructure
+  namespace: argo-cd
+spec:
+  goTemplate: true
+  generators:
+    - git:
+        repoURL: https://github.com/payobills/argo-config
+        revision: main
+        files:
+          - path: "infra/**/config.json"
+  template:
+    metadata:
+      name: 'infra-{{ .metadata.name }}'
+    spec:
+      destination:
+        namespace: '{{ .metadata.labels.targetNamespace }}'
+        server: https://kubernetes.default.svc
+      project: payobills
+      sources:
+        - repoURL: '{{ .metadata.labels.repoURL }}'
+          chart: '{{ .metadata.labels.chartName }}'
+          targetRevision: '{{ .metadata.labels.chartVersion }}'
+          helm:
+            valueFiles:
+              - $argoConfig/infra/{{ .path.basename }}/values.yaml
+        - repoURL: 'https://github.com/payobills/argo-config.git'
+          targetRevision: main
+          ref: argoConfig
+      syncPolicy:
+        automated:
+          selfHeal: false
+          prune: false
+        syncOptions:
+          - CreateNamespace=true
