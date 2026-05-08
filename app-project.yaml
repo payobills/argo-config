@@ -19,5 +19,5 @@ spec:
   - https://github.com/payobills/payobills
   - https://github.com/payobills/argo-config
   - https://charts.bitnami.com/bitnami
-  - oci://registry-1.docker.io/bitnamicharts
+  - oci://registry-1.docker.io/bitnamicharts/redis
 

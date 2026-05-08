@@ -21,7 +21,7 @@ spec:
       project: payobills
       sources:
         - repoURL: '{{ .metadata.labels.repoURL }}'
-          chart: '{{ .metadata.labels.chartName }}'
+          path: .
           targetRevision: '{{ .metadata.labels.chartVersion }}'
           helm:
             valueFiles:
