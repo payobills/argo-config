@@ -8,11 +8,16 @@ spec:
     kind: Namespace
   sourceNamespaces:
   - payobills
+  - payobills-infra
   destinations:
   - namespace: payobills
+    server: https://kubernetes.default.svc
+  - namespace: payobills-infra
     server: https://kubernetes.default.svc
   sourceRepos:
   - https://payobills.github.io/helm-charts
   - https://github.com/payobills/payobills
   - https://github.com/payobills/argo-config
+  - https://charts.bitnami.com/bitnami
+  - oci://registry-1.docker.io/bitnamicharts
 

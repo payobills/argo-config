@@ -2,7 +2,7 @@
   "metadata": {
     "name": "redis",
     "labels": {
-      "repoURL": "https://charts.bitnami.com/bitnami",
+      "repoURL": "oci://registry-1.docker.io/bitnamicharts",
       "chartName": "redis",
       "chartVersion": "25.3.8",
       "targetNamespace": "payobills-infra"
