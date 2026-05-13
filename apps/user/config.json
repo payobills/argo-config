@@ -1,9 +1,12 @@
 {
   "metadata": {
-    "name": "files",
+    "name": "user",
     "labels": {
       "chartVersion": "0.6.1",
-      "appVersion": "0.6.1"
+      "appVersion": "0.6.1",
+      "preview.devcontainerImage": "mcr.microsoft.com/devcontainers/javascript-node",
+      "preview.devcontainerTag": "18",
+      "preview.devCmd": "cd apps/user/src && PORT=80 node index.mjs"
     }
   }
 }

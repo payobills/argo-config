@@ -3,7 +3,10 @@
     "name": "files",
     "labels": {
       "chartVersion": "0.2.4",
-      "appVersion": "0.6.4"
+      "appVersion": "0.6.4",
+      "preview.devcontainerImage": "mcr.microsoft.com/devcontainers/javascript-node",
+      "preview.devcontainerTag": "18",
+      "preview.devCmd": "cd apps/files/src && PORT=80 node index.js"
     }
   }
 }

@@ -3,7 +3,10 @@
     "name": "ui",
     "labels": {
       "appVersion": "0.6.54",
-      "chartVersion": "0.6.0"
+      "chartVersion": "0.6.0",
+      "preview.devcontainerImage": "mcr.microsoft.com/devcontainers/javascript-node",
+      "preview.devcontainerTag": "18",
+      "preview.devCmd": "cd apps/ui/src && npm install && npm run dev -- --host 0.0.0.0 --port 80"
     }
   }
 }
