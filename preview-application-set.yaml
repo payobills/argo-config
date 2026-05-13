@@ -12,9 +12,6 @@ spec:
               github:
                 owner: payobills
                 repo: payobills
-                tokenRef:
-                  secretName: github-token
-                  key: token
               requeueAfterSeconds: 60
           - git:
               repoURL: https://github.com/payobills/argo-config
