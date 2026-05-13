@@ -4,7 +4,10 @@
     "labels": {
       "chartVersion": "0.5.2",
       "appVersion": "0.6.9",
-      "appType": "tools"
+      "appType": "tools",
+      "preview.devcontainerImage": "mcr.microsoft.com/devcontainers/rust",
+      "preview.devcontainerTag": "1",
+      "preview.devCmd": "cd apps/transaction-parser/src && SERVER_ADDRESS=0.0.0.0:80 cargo run -- api"
     }
   }
 }

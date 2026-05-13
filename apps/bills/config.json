@@ -4,7 +4,10 @@
     "labels": {
       "chartVersion": "0.6.10",
       "appVersion": "0.6.5",
-      "appName": "subgraph-bills"
+      "appName": "subgraph-bills",
+      "preview.devcontainerImage": "mcr.microsoft.com/devcontainers/dotnet",
+      "preview.devcontainerTag": "8.0",
+      "preview.devCmd": "cd apps/bills/src && ASPNETCORE_URLS=http://+:80 dotnet watch run --project API"
     }
   }
 }
