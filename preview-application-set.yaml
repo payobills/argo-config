@@ -1,0 +1,64 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: payobills-pr-previews
+  namespace: argo-cd
+spec:
+  goTemplate: true
+  generators:
+    - matrix:
+        generators:
+          - pullRequest:
+              github:
+                owner: payobills
+                repo: payobills
+              requeueAfterSeconds: 60
+          - git:
+              repoURL: https://github.com/payobills/argo-config
+              revision: main
+              files:
+                - path: "apps/**/config.json"
+  template:
+    metadata:
+      name: 'payobills-pr-{{.number}}-{{.path.basename}}'
+    spec:
+      destination:
+        namespace: 'payobills-pr-{{.number}}'
+        server: https://kubernetes.default.svc
+      project: payobills
+      sources:
+        - chart: '{{.path.basename}}'
+          repoURL: https://payobills.github.io/helm-charts
+          targetRevision: '{{index .metadata.labels "chartVersion"}}'
+          helm:
+            valuesObject:
+              environment: LOCAL_DEVELOPMENT
+              replicaCount: 1
+              image:
+                repository: '{{index .metadata.labels "preview.devcontainerImage"}}'
+                tag: '{{index .metadata.labels "preview.devcontainerTag"}}'
+                pullPolicy: Always
+              pod:
+                annotations: {}
+                volumes: []
+                volumeMounts: []
+                env: []
+                command:
+                  - /bin/sh
+                  - -c
+                  - 'git clone --branch {{.branch}} --depth 1 https://github.com/payobills/payobills /workspace && cd /workspace && {{index .metadata.labels "preview.devCmd"}}'
+              serviceAccount:
+                create: true
+                annotations: {}
+              ingress:
+                enabled: false
+              autoscaling:
+                enabled: false
+              resources: {}
+              nodeSelector: {}
+              tolerations: []
+              affinity: {}
+      syncPolicy:
+        automated: {}
+        syncOptions:
+          - CreateNamespace=true
