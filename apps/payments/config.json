@@ -3,7 +3,7 @@
     "name": "payments",
     "labels": {
       "chartVersion": "0.3.16",
-      "appVersion": "0.6.12",
+      "appVersion": "0.6.13",
       "appName": "subgraph-payments",
       "preview.devcontainerImage": "mcr.microsoft.com/devcontainers/dotnet",
       "preview.devcontainerTag": "8.0",
