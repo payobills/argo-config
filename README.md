@@ -14,6 +14,8 @@ $ alias k=kubectl
 
 ## GraphQL composition
 
+> ⚠️ This is not working, use Rover cli.
+
 Currently, the GraphQL composition done using [graphql-hive](https://github.com/mrsauravsahu/graphql-hive) doesn't work.
 
 ```bash

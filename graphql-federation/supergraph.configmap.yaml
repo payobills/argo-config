@@ -4,7 +4,7 @@ metadata:
   name: supergraph-config
   namespace: payobills
   annotations:
-    sha256sum: 1a873a220e6fd3c489a64fcee2a4dfc659a5bb36507d03a02364bb7d7c0143d6
+    sha256sum: 0d42f9013400f4f8edeb64de0119105da169a3d1ee20a1d25b5ebde28d982723
 data:
   gatewayConfig: |
     import { defineConfig } from "@graphql-hive/gateway"
@@ -313,6 +313,7 @@ data:
         order: [TransactionDTOSortInput!]
       ): TransactionsByYearAndMonthConnection @join__field(graph: PAYMENTS)
       transactionTags: [TransactionTagDTO!]! @join__field(graph: PAYMENTS)
+      transactionStats(filters: TransactionStatsFiltersInput): [TransactionStatDTO!]! @join__field(graph: PAYMENTS)
     }
 
     type RangeOfInt32
@@ -461,6 +462,28 @@ data:
 
       """The item at the end of the edge."""
       node: TransactionDTO!
+    }
+
+    type TransactionStatDTO
+      @join__type(graph: PAYMENTS)
+    {
+      stat: String!
+      value: String!
+    }
+
+    enum TransactionStatScope
+      @join__type(graph: PAYMENTS)
+    {
+      PARSE @join__enumValue(graph: PAYMENTS)
+      TAGS @join__enumValue(graph: PAYMENTS)
+      CURRENCY @join__enumValue(graph: PAYMENTS)
+    }
+
+    input TransactionStatsFiltersInput
+      @join__type(graph: PAYMENTS)
+    {
+      fromDate: String
+      scope: TransactionStatScope
     }
 
     input TransactionTagAddOrUpdateDTOInput
