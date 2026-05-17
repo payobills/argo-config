@@ -229,6 +229,8 @@ data:
       transactionAdd(input: TransactionAddDTOInput!): TransactionDTO! @join__field(graph: PAYMENTS)
       transactionReceiptsSync(input: TransactionReceiptsSyncInput!): [File!]! @join__field(graph: PAYMENTS)
       transactionTagsAddOrUpdate(input: TransactionTagAddOrUpdateDTOInput!): TransactionTagDTO! @join__field(graph: PAYMENTS)
+      tripCreate(input: TripCreateDTOInput!): TripDTO! @join__field(graph: PAYMENTS)
+      tripUpdate(id: String!, input: TripUpdateDTOInput!): TripDTO! @join__field(graph: PAYMENTS)
     }
 
     """Information about pagination in a connection."""
@@ -314,6 +316,7 @@ data:
       ): TransactionsByYearAndMonthConnection @join__field(graph: PAYMENTS)
       transactionTags: [TransactionTagDTO!]! @join__field(graph: PAYMENTS)
       transactionStats(filters: TransactionStatsFiltersInput): [TransactionStatDTO!]! @join__field(graph: PAYMENTS)
+      trips: [TripDTO!]! @join__field(graph: PAYMENTS)
     }
 
     type RangeOfInt32
@@ -406,6 +409,8 @@ data:
       ocrId: String
       searchTerm: String
       tags: [String!]
+      startPaidAt: DateTime
+      endPaidAt: DateTime
     }
 
     input TransactionReceiptsSyncInput
@@ -510,4 +515,45 @@ data:
       notes: String
       backDateString: String
       backDate: DateTime
+    }
+
+    input TripCreateDTOInput
+      @join__type(graph: PAYMENTS)
+    {
+      title: String!
+      startDate: String
+      endDate: String
+    }
+
+    type TripDTO
+      @join__type(graph: PAYMENTS)
+    {
+      transactions(
+        """Returns the first _n_ elements from the list."""
+        first: Int
+
+        """Returns the elements in the list that come after the specified cursor."""
+        after: String
+
+        """Returns the last _n_ elements from the list."""
+        last: Int
+
+        """
+        Returns the elements in the list that come before the specified cursor.
+        """
+        before: String
+        order: [TransactionDTOSortInput!]
+      ): TransactionsConnection
+      id: String!
+      title: String!
+      startDate: DateTime
+      endDate: DateTime
+    }
+
+    input TripUpdateDTOInput
+      @join__type(graph: PAYMENTS)
+    {
+      title: String
+      startDate: String
+      endDate: String
     }
