@@ -2,7 +2,7 @@
   "metadata": {
     "name": "ui",
     "labels": {
-      "appVersion": "0.6.57",
+      "appVersion": "0.6.58",
       "chartVersion": "0.6.0",
       "preview.devcontainerImage": "mcr.microsoft.com/devcontainers/javascript-node",
       "preview.devcontainerTag": "18",
