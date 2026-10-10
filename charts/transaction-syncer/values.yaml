@@ -1,0 +1,54 @@
+# Default values for transaction-syncer.
+# Self-contained chart for the payobills tools/transaction-syncer job
+# (Notion -> NocoDB, run-to-completion, scheduled as a CronJob).
+
+image:
+  repository: ghcr.io/payobills/tools/transaction-syncer
+  pullPolicy: IfNotPresent
+  # First published tag that ships linux/amd64 (0.3.0 was arm64-only).
+  tag: "0.5.0"
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# Cron schedule. The binary drains all rows with an empty SyncResult, then exits.
+schedule: "*/5 * * * *"
+concurrencyPolicy: Forbid
+restartPolicy: OnFailure
+backoffLimit: 2
+activeDeadlineSeconds: 600
+successfulJobsHistoryLimit: 3
+failedJobsHistoryLimit: 1
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+pod:
+  annotations: {}
+  env:
+    # TODO: NocoDB transactions table records URL (api/v2/tables/<table-id>/records)
+    - name: NOCODB_TRANSACTION_TABLE_URL
+      value: ""
+    # TODO: Notion database id that holds the bill's transactions
+    - name: NOTION_DB_ID
+      value: ""
+    # TODO: create this secret: kubectl -n payobills create secret generic notion-token --from-literal=token=<notion-integration-token>
+    - name: NOTION_INTEGRATION_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: notion-token
+          key: token
+    - name: NOCODB_INTEGRATION_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: nocodb-token
+          key: token
+
+podSecurityContext: {}
+securityContext: {}
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

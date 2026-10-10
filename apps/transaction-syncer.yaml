@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payobills-transaction-syncer
+spec:
+  destination:
+    namespace: payobills
+    server: https://kubernetes.default.svc
+  project: payobills
+  source:
+    repoURL: https://github.com/payobills/argo-config
+    targetRevision: main
+    path: charts/transaction-syncer
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
